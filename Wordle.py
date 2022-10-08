@@ -14,8 +14,7 @@ def wordle():
 
   # Get a random word from the list of words in the word dictionary
   correct_word = random.choice(FIVE_LETTER_WORDS)
-  # used for testing in console: print(correct_word)
-
+  
   # display word in first row - Milestone 1 - commented out for final program
   # for i, c in enumerate(correct_word):
   #     gw.set_square_letter(0,i,c)
@@ -33,17 +32,13 @@ def wordle():
 
     # Sets guessed_word equal to values contained in Wordle view squares
     for col in range(5):
-      guessed_word += str(gw.get_square_letter(gw.get_current_row(),
-                                               col)).lower()
-    # commented out, used for testing in console: print(guessed_word, " vs ", correct_word)
-
+      guessed_word += str(gw.get_square_letter(gw.get_current_row(),col)).lower()
+  
     # Check the word to see if it is in the list
     for dictWord in FIVE_LETTER_WORDS:
       if guessed_word.lower() == dictWord:
         word_in_list = True
         valid = True
-
-    # Debug code for testing in console: print("Word is in wordlist: ", word_in_list)
 
     # check word length
     if len(correct_word) != len(guessed_word):
@@ -64,10 +59,9 @@ def wordle():
       for guess_count, guess_letter in enumerate(guessed_word):
         # for each letter in the correct word
         for target_count, target_letter in enumerate(correct_word):
-          #if in correct spot, change color to green
+          #if in correct spot, change color to green for letter and keyboard key
           if guess_letter == target_letter and guess_count == target_count:
-            gw.set_square_color(gw.get_current_row(), guess_count,
-                                CORRECT_COLOR)
+            gw.set_square_color(gw.get_current_row(), guess_count,CORRECT_COLOR)
             correct_word_array[target_count] = 1
             gw.set_key_color(guess_letter.upper(), CORRECT_COLOR)
 
@@ -75,8 +69,7 @@ def wordle():
       #for each letter in guessed word
       for guess_count, guess_letter in enumerate(guessed_word):
         #check if letter is already colored green. If so, skip.
-        if gw.get_square_color(gw.get_current_row(),
-                               guess_count) != CORRECT_COLOR:
+        if gw.get_square_color(gw.get_current_row(),guess_count) != CORRECT_COLOR:
           #for each letter in correct word
           for target_count, target_letter in enumerate(correct_word):
             #check if letter is in word, but in wrong spot
@@ -84,8 +77,7 @@ def wordle():
               #check if the letter in the correct word has already been used for another letter in guessed word using correct word array
               if correct_word_array[target_count] == 0:
                 #change color to yellow if all conditions met
-                gw.set_square_color(gw.get_current_row(), guess_count,
-                                    PRESENT_COLOR)
+                gw.set_square_color(gw.get_current_row(), guess_count,PRESENT_COLOR)
                 #mark letter in correct word array as used for guess in this row
                 correct_word_array[target_count] = 1
 
@@ -93,31 +85,26 @@ def wordle():
                 if gw.get_key_color(guess_letter.upper()) != CORRECT_COLOR:
                   #if not green, make it yellow
                   gw.set_key_color(guess_letter.upper(), PRESENT_COLOR)
-                #break loop to avoid coloring letter gray
+                #break loop to avoid recoloring letter gray in next loop
                 break
 
             #if letter not present in word, color gray
             else:
-              gw.set_square_color(gw.get_current_row(), guess_count,
-                                  MISSING_COLOR)
+              gw.set_square_color(gw.get_current_row(), guess_count,MISSING_COLOR)
               # check if keyboard key color is green or yellow
-              if gw.get_key_color(
-                  guess_letter.upper()) != CORRECT_COLOR and gw.get_key_color(
-                    guess_letter.upper()) != PRESENT_COLOR:
-
+              if gw.get_key_color(guess_letter.upper()) != CORRECT_COLOR and gw.get_key_color(guess_letter.upper()) != PRESENT_COLOR:
                 #if not already green or yellow, make gray
                 gw.set_key_color(guess_letter.upper(), MISSING_COLOR)
                       
     # if the word is invalid, it should not move to the next row.
-    #testing code in console: print(gw.get_current_row())
 
     #victory/failure messages
     #if correct
     if (correct_word == guessed_word):
       gw.show_message("VICTORY")
     #if final guess is incorrect
-    elif (gw.get_current_row() == 5):
-      gw.show_message("You suck. The correct word was " + correct_word + ".")
+    elif (gw.get_current_row() == 5 and valid):
+      gw.show_message("You failed. The correct word was " + correct_word + ".")
     #if incorrect, but they still have more guesses, move on to next row
     elif (valid):
       gw.set_current_row(gw.get_current_row() + 1)
